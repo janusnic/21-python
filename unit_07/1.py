@@ -1,54 +1,29 @@
 # -*- coding: utf-8 -*-
-class A(object):
-    qux = 'A'
-    def __init__(self, name):
-        self.name=name
-    def foo(self):
-        print 'foo'
 
-a = A('a')
+class Person(object):
+    """ A simple class representing a person object.
 
-print '''
-class A(object):
-    qux = 'A'
-    def __init__(self, name):
-        self.name=name
-    def foo(self):
-        print 'foo'
+    """
+    #initialize name, ID number, city
+    def __init__(self, fname, lname, ID, city):
+        self.__ID = ID
+        self.__first_name  = fname
+        self.__last_name  = lname
+        self.__city = city
 
-a = A('a')
+    def _getName(self):
+        s = ' '
+        return s.join((self.__first_name, self.__last_name))
 
-    '''
-print 'a.__dict__=', a.__dict__ 
+    #display person name
+    def show_person(self):
+        print('Name:', self._getName())
+        print('ID:', self.__ID)
+        print('City:', self.__city)
 
-print 'a.foo()=', 
-a.foo() 
+john = Person('John', 'Sidorov', 123456, 'NYC')
+john.show_person()
 
-print 'a.__class__=', a.__class__ 
+print john._getName()
 
-class B(object):
-    qux = 'B'
-    def __init__(self):
-        self.name = 'B object'
-    def bar(self):
-         print 'bar'
-
-print '''
-class B(object):
-    qux = 'B'
-    def __init__(self):
-        self.name = 'B object'
-    def bar(self):
-         print 'bar'
-
-    '''
-a.__class__ = B
-print 'a.__class__ = B'
-
-print 'Значение a.name осталось прежним, т.е. __init__ не вызывался при смене класса.'
-print 'a.__dict__=', a.__dict__ 
-
-print 'Доступ к классовым переменным и методам «прошлого» класса A пропал'
-print 'А вот классовые переменные и методы класса B доступы:'
-a.bar() # bar
-print 'a.qux=',a.qux # 'B'
+print john._Person__city

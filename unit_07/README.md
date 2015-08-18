@@ -1,467 +1,663 @@
 # 21-python
 
-[Объектно-ориентированное программирование на Python](https://slides.com/janusnicon/python-oop/)
+- Объектно-ориентированное программирование на Python
+[Особенности ООП в Python](https://slides.com/janusnicon/class-inside/)
 
-## Принципы ООП
+# основные идеи ООП:
+1. наследование. Возможность выделять общие свойства и методы классов в один класс верхнего уровня (родительский). Классы, имеющие общего родителя, различаются между собой за счет включения в них различных дополнительных свойств и методов.
 
-- Все данные представляются объектами
-- Программа является набором взаимодействующих объектов, посылающих друг другу сообщения
-- Каждый объект имеет собственную часть памяти и может иметь в составе другие объекты
-- Каждый объект имеет тип
-- Объекты одного типа могут принимать одни и те же сообщения (и выполнять одни и те же действия)
+2.  Инкапсуляция. Свойства и методы класса делятся на доступные из вне (опубликованные) и недоступные (защищенные). Защищенные атрибуты нельзя изменить, находясь вне класса. Опубликованные же атрибуты также называют интерфейсом объекта, т. к. с их помощью с объектом можно взаимодействовать.
 
-## Определение класса
+3.  Полиморфизм. Полиморфизм подразумевает замещение атрибутов, описанных ранее в других классах: имя атрибута остается прежним, а реализация уже другой. Полиморфизм позволяет специализировать (адаптировать) классы, оставляя при этом единый интерфейс взаимодействия.
+
+# Особенности ООП в Python
+1.  Любое данное — это объект. Число, строка, список, массив и др. — все является объектом. Бывают объекты встроенных классов, а бывают объекты пользовательских классов. Для единого механизма взаимодействия предусмотрены методы перегрузки операторов.
+
+2.  Класс — это тоже объект с собственным пространством имен.  
+
+3.  Инкапсуляции в Python не уделяется особого внимания. В других языках программирования обычно нельзя получить напрямую доступ к свойству, описанному в классе. Для его изменения может быть предусмотрен специальный метод. В Python же это легко сделать, просто обратившись к свойству класса из вне. Несмотря на это в Python все-таки предусмотрены специальные способы ограничения доступа к переменным в классе.
+
+# Инкапсуляция
 ```
-class имя_класса(надкласс1, надкласс2, ...):
-        # определения атрибутов и методов класса
-```
+  class Person(object):
+      """docstring for Foo
+           Одиночное подчеркивание в начале имени атрибута говорит о том,
+           что переменная или метод не предназначен для использования
+           вне методов класса, однако атрибут доступен по этому имени
+      """
 
-У класса могут быть базовые (родительские) классы (надклассы), которые (если они есть) указываются в скобках после имени определяемого класса.
+      #initialize name, ID number, city
+      def __init__(self, fname, lname, ID, city):
+          self.__ID = ID
+          self.__first_name  = fname
+          self.__last_name  = lname
+          self.__city = city
 
-## Минимально возможное определение класса выглядит так:
-```
-    class A:
-        pass
+      def _getName(self):
+          s = ' '
+          return s.join((self.__first_name, self.__last_name))
 
-```
+      #display Person name
+      def show_person(self):
+          print('Name:', self._getName())
+          print('ID:', self.__ID)
+          print('City:', self.__city)
 
-В терминологии Python члены класса называются экземплярами, функции класса — методами, а поля класса — свойствами (или просто атрибутами).
+  john = Person('John', 'Sidorov', 123456, 'NYC')
 
-Определения методов аналогичны определениям функций, но методы всегда имеют первый аргумент, называемый по широко принятому соглашению self:
+  print john._getName()
 
-```
-    class A:
-        def m1(self, x):
-            # блок кода метода
-```
 
-Определения атрибутов — обычные операторы присваивания, которые связывают некоторые значения с именами атрибутов.
-```
-    class A:
-        attr1 = 2 * 2
-
-```
-В языке Python класс не является чем-то статическим после определения, поэтому добавить атрибуты можно и после:
-```
-    class A:
-        pass
-
-    def myMethod(self, x):
-        return x * x
-
-    A.m1 = myMethod
-    A.attr1 = 2 * 2
-```
-## Создание экземпляра
-
-Для создания объекта — экземпляра класса (то есть, инстанцирования класса), достаточно вызвать класс по имени и задать параметры конструктора:
-```
-    class Point:
-         def __init__(self, x, y, z):
-             self.coord = (x, y, z)
-         def __repr__(self):
-             return "Point(%s, %s, %s)" % self.coord
->>> p = Point(0.0, 1.0, 0.0)
->>> p
-Point(0.0, 1.0, 0.0)
+  ```
+  Двойное подчеркивание в начале имени атрибута:
+  атрибут становится недоступным по этому имени.
 
 ```
-## метод __new__
-Переопределив классовый метод __new__, можно контролировать процесс создания экземпляра. Этот метод вызывается до метода __init__ и должен вернуть новый экземпляр, либо None (в последнем случае будет вызван __new__ родительского класса). Метод __new__ используется для управления созданием неизменчивых (immutable) объектов, управления созданием объектов в случаях, когда __init__ не вызывается, например, при десериализации (unpickle). Следующий код демонстрирует один из вариантов реализации шаблона Одиночка:
+
+print john.__city
+
 ```
->>> class Singleton(object):
-        obj = None                           # Атрибут для хранения единственного экземпляра
-        def __new__(cls,*dt,**mp):           # класса Singleton.
-           if cls.obj is None:               # Если он еще не создан, то
-              cls.obj = object.__new__(cls,*dt,**mp) # вызовем __new__ родительского класса
-           return cls.obj                    # вернем синглтон
+Однако полностью это не защищает, так как атрибут всё равно остаётся доступным под именем
+
+```
+_ИмяКласса__ИмяАтрибута
+print john._Person__city
+
+```
+# Проверка способа запуска модуля
+
+```
+if __name__ == '__main__':
+    # Create an person
+    john = Person(
+        fname='John', lname='Paw', city="NYC", ID=223344
+    )
+    mary = Person(
+        fname='Mary', lname='Sue', city='LA', ID=113344
+    )
+
+```
+- Как получить список всех атрибутов объекта
+
+```
+print dir(mary)
+
+```
+- __doc__ : Class documentation string or None if undefined.
+
+```
+
+print "Person.__doc__:", Person.__doc__
+
+#__name__: Class name
+print "Person.__name__:", Person.__name__
+
+#__module__: Module name in which the class is defined. This attribute is "__main__" in interactive mode.
+print "Person.__module__:", Person.__module__
+
+#__bases__ : A possibly empty tuple containing the base classes, in the order
+#of their occurrence in the base class list.
+print "Person.__bases__:", Person.__bases__
+
+#__dict__ : Dictionary containing the class's namespace
+print "Person.__dict__:", Person.__dict__
+
+print '+++++Mary has+++++'
+print "mary.__doc__:", mary.__doc__
+
+print "mary.__module__:", mary.__module__
+print "mary.__dict__:", mary.__dict__
+
+# print "mary.__name__:", mary.__name__
+# print "mary.__bases__:", mary.__bases__
+
+
+```
+- Как получить список всех публичных атрибутов объекта
+
+Сделать это можно или с помощью списковых выражений (list comprehension):
+```
+print [arg for arg in dir(Person) if not arg.startswith('_')]
+
+```
+или воспользоваться функцией filter:
+```
+print filter(lambda x: not x.startswith('_'), dir(Person))
+
+```
+
+- Как получить список методов объекта
+```
+print [arg for arg in dir(Person) if callable(getattr(Person, arg))]
+
+```
+или
+```
+print filter(lambda arg: callable(getattr(Person, arg)), dir(Person))
+
+```
+1. __new__(cls, [...)
+Это первый метод, который будет вызван при инициализации объекта. Он принимает в качестве параметров класс и потом любые другие аргументы, которые будут переданы в __init__. __new__ используется весьма редко, но иногда бывает полезен, в частности, когда класс наследуется от неизменяемого (immutable) типа, такого как кортеж (tuple) или строка.
+
+2. __init__(self, [...)
+Инициализатор класса. Ему передаётся всё, с чем был вызван первоначальный конструктор. __init__ почти повсеместно используется при определении классов.
+
+3. __del__(self)
+__del__ это деструктор. __del__ всегда вызывается по завершении работы интерпретатора.
+
+4. __format__(self, formatstr)
+Определяет поведение, когда экземпляр класса используется в форматировании строк нового стиля. Это может быть полезно для определения собственных числовых или строковых типов, которым вы можете предоставить какие-нибудь специальные опции форматирования.
+
+```
+def __format__(self, formatstr):
+    return formatstr
+
+    def __format__(self, format_spec):
+        if isinstance(format_spec, unicode):
+            return unicode(str(self))
+        else:
+            return str(self)
+
+    #display name
+    def show_person(self):
+        print 'Name', format(self._getName(),'<9')
+        print 'ID:', format(self.__ID,'<9')
+        print('City:', self.__city)
+
+    def getfName(self):
+        fmt = ':>30'
+        return format(self.__first_name, fmt)
+
+```
+5. __hash__(self)
+Определяет поведение функции hash(), вызыванной для экземпляра вашего класса. Метод должен возвращать целочисленное значение, которое будет использоваться для быстрого сравнения ключей в словарях. Заметьте, что в таком случае обычно нужно определять и __eq__ тоже. Руководствуйтесь следующим правилом: a == b подразумевает hash(a) == hash(b).
+
+6. __getattr__(self, name)
+Вы можете определить поведение для случая, когда пользователь пытается обратиться к атрибуту, который не существует (совсем или пока ещё). Это может быть полезным для перехвата и перенаправления частых опечаток, предупреждения об использовании устаревших атрибутов, или хитро возвращать AttributeError, когда это вам нужно.
+
+7. __setattr__(self, name, value)
+В отличии от __getattr__, __setattr__ решение для инкапсуляции. Этот метод позволяет вам определить поведение для присвоения значения атрибуту, независимо от того существует атрибут или нет. То есть, вы можете определить любые правила для любых изменений значения атрибутов.
+
+8. __delattr__
+Это то же, что и __setattr__, но для удаления атрибутов, вместо установки значений.
+
+9. __getattribute__(self, name)
+__getattribute__ может использоваться только с классами нового типа. Этот метод позволяет вам определить поведение для каждого случая доступа к атрибутам (а не только к несуществующим, как __getattr__(self, name)). Он страдает от таких же проблем с бесконечной рекурсией, как и его коллеги (на этот раз вы можете вызывать __getattribute__ у базового класса, чтобы их предотвратить). Он  главным образом устраняет необходимость в __getattr__, который в случае реализации __getattribute__ может быть вызван только явным образом или в случае генерации исключения AttributeError.
+
+10. __reduce__(self)
+ __reduce__() вызывается когда сериализуется объект, в котором этот метод был определён. Он должен вернуть или строку, содержащую имя глобальной переменной, содержимое которой сериализуется как обычно, или кортеж. Кортеж может содержать от 2 до 5 элементов: вызываемый объект, который будет вызван, чтобы создать десериализованный объект, кортеж аргументов для этого вызываемого объекта, данные, которые будут переданы в __setstate__ (опционально), итератор списка элементов для сериализации (опционально) и итератор словаря элементов для сериализации (опционально).
+
+11. __reduce_ex__(self, protocol)
+Иногда полезно знать версию протокола, реализуя __reduce__. И этого можно добиться, реализовав вместо него __reduce_ex__. Если __reduce_ex__ реализован, то предпочтение при вызове отдаётся ему.
+
+12. __sizeof__(self)
+Определяет поведение функции sys.getsizeof(), вызыванной на экземпляре вашего класса. Метод должен вернуть размер вашего объекта в байтах. Он главным образом полезен для классов, определённых в расширениях на C.
+
+
+# Перегрузка операторов Наследование
+
+calling the parent class's __init__ method
+
+```
+
+class Employer(Person):
+    """ An employer is a person who runs a company.
+
+    """
+    # The name of the company
+
+    def __init__(self, fname, lname, ID, city,company_name):
+        Person.__init__(self, fname, lname, ID, city)
+        self.company_name = company_name
+
+
+
+# Проверка способа запуска модуля
+
+if __name__ == '__main__':
+    # Create an employee with a boss
+    boss_john = Employer(
+        fname='John', lname='Paw', city="NYC", ID=223344, company_name="Packrat's Cats"
+    )
+
+    boss_john .show_person()
+
+```
+
+# Проверка способа запуска модуля
+```
+if __name__ == '__main__':
+    # Create an employee with a boss
+    boss_john = Employer(
+        fname='John', lname='Paw', city="NYC", ID=223344, company_name="Packrat's Cats"
+    )
+
+    boss_john .show_person()
+    #__name__: Class name
+    print "Employer.__name__:", Employer.__name__
+
+    #__dict__ : Dictionary containing the class's namespace
+    print "boss_john.__dict__:", boss_john.__dict__
+
+    def show_person(self):
+        Person.show_person(self)
+        print('Company Name:',self.company_name)
+
+```
+Use super() instead of calling the parent class's __init__ method. It makes multiple inheritance a bit easier.
+
+```
+class Employer(Person):
+    """ An employer is a person who runs a company.
+
+    """
+    # The name of the company
+    def __init__(self,fname, lname, ID, city, company_name):
+        super(Employer, self).__init__(fname, lname, ID, city)
+        self.company_name = company_name
+```
+
+- super(self.__class__, self)
+
+```
+class Employer(Person):
+    """ An employer is a person who runs a company.
+
+    """
+    # The name of the company
+    def __init__(self,fname, lname, ID, city, company_name):
+        super(self.__class__, self).__init__(fname, lname, ID, city)
+        self.company_name = company_name
+
+    def show_person(self):
+        super(self.__class__, self).show_person()
+        print('Company Name:',self.company_name)
+```
+- using kwargs, and then pop
+
+```
+class Employer(Person):
+    """ An employer is a person who runs a company.
+
+    """
+    # The name of the company
+    def __init__(self,*args, **kwargs):
+        self.company_name = kwargs.pop('company_name')
+        super(self.__class__, self).__init__(*args, **kwargs)
+
+```
+- using kwargs
+```
+class Person(object):
+    """ A simple class representing a person object.
+
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.__ID = kwargs['ID']
+        self.__first_name  = kwargs['fname']
+        self.__last_name  = kwargs['lname']
+        self.__city = kwargs['city']
+```
+- class Employee
+
+```
+class Employee(Person):
+    """ An employee is person with a boss and a phone number.
+
+    """
+    # initialize method calls superclass
+    def __init__(self,*args, **kwargs):
+        self.__base_pay = kwargs['base_pay']
+        self.__shift = kwargs['shift']
+        super(self.__class__, self).__init__(*args, **kwargs)
+
+
+        employee_mary = Employee( fname='Mary', lname='Sue', city="NYC", ID=113344, base_pay=10000, shift=2)
+
+        #__dict__ : Dictionary containing the class's namespace
+        print "employee_mary.__dict__:", employee_mary.__dict__
+
+```
+
+- show_pay перезагрузка superclass
+
+```
+#set global constant
+SHIFT_2 = 0.05
+SHIFT_3 = 0.10
+
+
+    def show_pay(self):
+        if self.__shift == 1:
+            print('My salary is ', self.__base_pay)
+        elif self.__shift == 2:
+            print('My salary is ', (self.__base_pay * SHIFT_2) + self.__base_pay)
+        elif self.__shift == 3:
+            print('My salary is ', (self.__base_pay * SHIFT_3) + self.__base_pay)
+
 ...
->>> obj = Singleton()
->>> obj.attr = 12
->>> new_obj = Singleton()
->>> new_obj.attr                       
-12
->>> new_obj is obj                     # new_obj и obj - это один и тот же объект
-True
-```
-
-## Конструктор и деструктор
-
-Специальные методы вызываются при создании экземпляра класса (конструктор) и при удалении класса (деструктор). В языке Python реализовано автоматическое управление памятью, поэтому деструктор требуется достаточно редко, для ресурсов, требующих явного освобождения.
-```
-
-class Line:
-    def __init__(self, p1, p2):
-        self.line = (p1, p2)
-    def __del__(self):
-        print "Удаляется линия %s - %s" % self.line
->>> l = Line((0.0, 1.0), (0.0, 2.0))
->>> del l
-Удаляется линия (0.0, 1.0) - (0.0, 2.0)
->>>
-```
-## Инкапсуляция и доступ к свойствам
-Все значения в Python являются объектами, инкапсулирующими код (методы) и данные и предоставляющими пользователям общедоступный интерфейс. Методы и данные объекта доступны через его атрибуты.
-
-## Сокрытие информации о внутреннем устройстве объекта
-Сокрытие информации о внутреннем устройстве объекта выполняется в Python на уровне соглашения между программистами о том, какие атрибуты относятся к общедоступному интерфейсу класса, а какие — к его внутренней реализации. Одиночное подчеркивание в начале имени атрибута говорит о том, что метод не предназначен для использования вне методов класса (или вне функций и классов модуля), однако, атрибут все-таки доступен по этому имени. Два подчеркивания в начале имени дают несколько большую защиту: атрибут перестает быть доступен по этому имени.
-
-Особым случаем является наличие двух подчеркиваний в начале и в конце имени атрибута. Они используются для специальных свойств и функций класса (например, для перегрузки операции). Такие атрибуты доступны по своему имени, но их использование зарезервировано для специальных атрибутов, изменяющих поведение объекта.
-
-## Доступ к атрибуту может быть как прямой:
-```
-class A(object):
-    def __init__(self, x):          # атрибут получает значение в конструкторе
-        self.x = x
-
-a = A(5)
-print a.x
-a.x = 5
-```
-Так и с использованием свойств с заданными методами для получения, установки и удаления атрибута:
+  employee_mary = Employee( fname='Mary', lname='Sue', city="NYC", ID=113344, base_pay=10000, shift=2)
+  employee_mary.show_pay()
 
 ```
-class A(object):
-    def __init__(self, x):
-        self._x = x
-    def getx(self):                 # метод для получения значения
-        return self._x
-    def setx(self, value):          # присваивания нового значения
-        self._x = value
-    def delx(self):                 # удаления атрибута
-        del self._x                 
-    x = property(getx, setx, delx, "Свойство x")    # определяем x как свойство
-
-a = A(5)      
-print a.x      # Синтаксис доступа к атрибуту при этом прежний
-a.x = 5
+- property
 
 ```
-## Наследование
-Python поддерживает как одиночное наследование, так и множественное, позволяющее классу быть производным от любого количества базовых классов.
-```
->>> class Par1(object):                # наследуем один базовый класс - object
-        def name1(self): return 'Par1'
->>> class Par2(object):
-        def name2(self): return 'Par2'
->>> class Child(Par1, Par2):           # создадим класс, наследующий Par1, Par2 (и, опосредованно, object)
-        pass
->>> x = Child()
->>> x.name1(), x.name2()               # экземпляру Child доступны методы из Par1 и Par2
-'Par1','Par2'
-```
+def __init__(self):
+    self._name = ''
 
+def fget(self):
+    print "Getting: %s" % self._name
+    return self._name
 
-## Полиморфизм
-В Python все методы являются виртуальными, что является естественным следствием разрешения доступа на этапе исполнения.
+def fset(self, value):
+    print "Setting: %s" % value
+    self._name = value.title()
 
-```
->>> class Parent(object):
-        def isParOrPChild(self) : return True
-        def who(self) : return 'parent'
->>> class Child(Parent):
-        def who(self): return 'child'
->>> x = Parent()
->>> x.who(), x.isParOrPChild()
-('parent', True)
->>> x = Child()
->>> x.who(), x.isParOrPChild()
-('child', True)
-```
-Явно указав имя класса, можно обратиться к методу родителя (как впрочем и любого другого объекта).
-```
->>> class Child(Parent):
-        def __init__(self):
-            Parent.__init__(self)
-```
-В общем случае для получения класса-предка применяется функция super.
+def fdel(self):
+    print "Deleting: %s" %self._name
+    del self._name
+name = property(fget, fset, fdel, "I'm the property.")
 
-```
-class Child(Parent):
-    def __init__(self):
-        super(Child, self).__init__()
 
 ```
 
-## __class__ 
+- property decorator
 
 ```
-def foo(): pass
+@property
+def base_pay(self):
+    return self.__base_pay
 
-print foo.__class__ 
-
->&lt;type 'function'&gt;
-
-print foo.__dict__ 
-> {}
-
-print (42).__dict__ 
-
->Traceback (most recent call last): File "&lt;stdin&gt;", line 1, in &lt;module&gt; AttributeError: 'int' object has no attribute '__dict__'
-
-print (42).__class__ 
-
-> &lt;type 'int'&gt;
-
-class A(object):
-    qux = 'A'
-    def __init__(self, name):
-        self.name=name
-    def foo(self):
-        print 'foo'
-
-a = A('a')
-```
-
-## У a тоже есть __dict__ и __class__:
-```
-print a.__dict__   
-
-> {'name': 'a'}
-print a.__class__  
-
-> &lt;class '__main__.A'&gt;
-
-print type(a) 
-
-> &lt;class '__main__.A'&gt;
-
-print a.__class__ is type(a) # True
-```
-## Класс и тип — это одно и то же.
-```
-print a.__class__ is type(a) is A 
-
-> True
-```
-## Пример. Переопределим класс объекта a:
-```
-class B(object):
-    qux = 'B'
-    def __init__(self):
-        self.name = 'B object'
-    def bar(self):
-         print 'bar'
-
-print a.__dict__ 
-
-> {'name': 'a'}
-
-print a.foo() 
-
-> foo
-
-print a.__class__ 
-> &lt;class '__main__.A'&gt;
-
-a.__class__ = B
-
-print a.__class__ 
-> &lt;class '__main__.B'&gt;
-
-```
-## Смотрим, что поменялось.
-
-Значение a.name осталось прежним, т.е. __init__ не вызывался при смене класса.
-```
-print a.__dict__ # {'name': 'a'}
-```
-- Доступ к классовым переменным и методам «прошлого» класса A пропал:
-> a.foo() 
-> Traceback (most recent call last): File "&lt;stdin&gt;", line 1, in &lt;module&gt; AttributeError: 'B' object has no attribute 'foo'
-А вот классовые переменные и методы класса B доступы:
-```
-print a.bar() # bar
-print a.qux # 'B'
-```
-Работа с атрибутам объекта: установка, удаление и поиск, равносильна вызову встроенных функций settattr, delattr, getattr:
-```
-a.x = 1
-print a.x
-setattr(a, 'x', 1)
-print a.x
-
-del a.x
-> print a.x
-> delattr(a, 'x')
-> print a.x
-
-> print a.x
-> getattr(a, 'x')
-
-При этом стоит стоит понимать, что setattr и delattr влияют и изменяют только сам объект (точнее a.__dict__), и не изменяют класс объекта.
-
-qux — является классовой переменной, т.е. она «принадлежит» классу B, а не объекту a:
-```
-print a.qux 
->  'B'
-print a.__dict__ 
-> {'name': 'a'}
-```
-если мы попытаемся изменить (установить) атрибут, setattr поместит его в __dict__, специфичный для данного, конкретного объекта.
-```
-b = B()
-print b.qux 
-> 'B'
-a.qux = 'myB'
-print a.qux 
-> 'myB'
-print a.__dict__ 
-
-> {'qux': 'myB', 'name': 'a'}
-print b.qux 
-> 'B'
-```
- Ну и раз есть 'qux' в __dict__ объекта, его можно удалить с помощью delattr:
-
-> del a.qux
-
-После удаления, a.qux будет возвращать значение классовой переменной:
-```
-print a.qux 
-> 'B'
-print a.__dict__ # {'name': 'a'}
-```
-Правда __dict__ у классов не совсем словарь
-```
-print A.__dict__ 
-
-> &lt;dictproxy object at 0x1111e88&gt;
-```
-__dict__ ответственен за доступ к внутреннему пространству имен, в котором хранятся методы, дескрипторы, переменные, свойства и прочее:
-```
-print dict(A.__dict__) 
-
-> {'__module__': '__main__', 'qux': 'A', '__dict__': &lt;attribute '__dict__' of 'A' objects&gt;, 'foo': &lt;function foo at 0x7f7797a25c08&gt;, '__weakref__': &lt;attribute '__weakref__' of 'A' objects&gt;, '__doc__': None}
-print A.__dict__.keys() # ['__module__', 'qux', '__dict__', 'foo', '__weakref__', '__doc__']&lt;
-```
-# Класс является объектом.
-```
-class A(object):
-    pass
+@base_pay.setter
+def base_pay(self, new_salary):
+    if new_salary < 0:
+        raise ValueError('salary must be positive')
+    self.__base_pay = new_salary
 
 
-print isinstance(A, object) 
-> True
-```
-# Число — это тоже объект.
-```
-print isinstance(42, object) 
-> True
-```
-# Класс — это класс (т.е. тип).
-```
-print isinstance(A, type) 
-> True
-```
-А вот число классом (типом) не является. (Что такое type будет пояснено позже)
-```
-print isinstance(42, type) 
-> False
-```
-Ну и a — тоже обычный объект.
-```
-a = A()
-print isinstance(a, A) 
-> True
-print isinstance(a, object) 
-> True
-print isinstance(a, type) 
-> False
-```
-И у A всего один прямой родительский класс — object.
-```
-print A.__bases__ 
-> (&lt;type 'object'&gt;,)
-```
-Часть специальных параметров можно даже менять:
-```
-print A.__name__ 
-> 'A'
-A.__name__ = 'B'
-print A 
-> &lt;class '__main__.B'&gt;
-```
-С помощью getattr получаем доступ к атрибутам класса:
-```
-print A.qux 
-> 'A'
-print A.foo 
-> &lt;unbound method A.foo&gt;
+    employee_mary = Employee( fname='Mary', lname='Sue', city="NYC", ID=113344, base_pay=10000, shift=2)
+      employee_mary.base_pay = 15000
+      print employee_mary.base_pay
+      employee_mary.show_pay()
 
-class A(object):
-    qux = 'A'
-    def __init__(self, name):
-        self.name=name
-    def foo(self):
-        print 'foo'
+  ```
 
-a = A
-b = A
+  - Аналогично можно перегрузить метод deleter:
 
-print b.qux 
-> 'A'
-print A.qux 
-> 'A'
-```
-Меняем атрибут qux у класса A. И соответственно должны поменяться значения, которые возвращают экземпляры класса A — a и b:
-```
-A.qux='B'
-print a.qux 
-> 'B'
-print b.qux 
-> 'B'
-```
-Точно так же в рантайме к классу можно добавить метод:
-```
-A.quux = lambda self: 'i have quux method'
-print A.__dict__['quux'] 
-> &lt;function &lt;lambda&gt; at 0x7f7797a25b90&gt;
-print A.quux 
-> &lt;unbound method A.&lt;lambda&gt;&gt;
-```
-И доступ к нему появится у экземпляров:
-```
-print a.quux() 
-> 'i have quux method'
-```
-объявим класс:
-```
-class A(object):
-    pass
-```
- Для класса A не определены ни __new__, ни __init__. В соответствии с алгоритмом поиска атрибутов для класса (типа), который не стоит путать с алгоритмом поиска атрибутов для обычных объектов, когда класс не найдет их в своем__dict__, он будет искать эти методы в __dict__ своих базовых (родительских) классах.
-
- Класс А имеет в качестве родителя встроенный класс object. Таким образом он будет их искать в object.__dict__
-```
-print object.__dict__['__init__'] 
-> &lt;slot wrapper '__init__' of 'object' objects&gt;
-print object.__dict__['__new__'] 
-> &lt;built-in method __new__ of type object at 0x82e780&gt;
 ```
 
- Раз есть такие методы, значит, получается, что a = A() аналогичен последовательности вызовов:
+    @base_pay.deleter
+    def base_pay(self):
+        del self.__base_pay
 ```
-a = object.__new__(A)
-object.__init__(a)
-```
-В общем виде, используя super, который как раз и реализует алгоритм поиска атрибутов по родительским классам [1]:
-```
-a = super(A, A).__new__(A)
-super(A, A).__init__(a)
-```
-# Пример.
-```
-class A(object):
-    def __new__(cls):
-        obj = super(A, cls).__new__(cls)
-        print 'created object', obj
-        return obj
-    def __init__(self):
-        print 'initing object', self
-A()
+- Динамические свойства
 
-> created object &lt;__main__.A object at 0x1620ed0&gt;
-> initing object &lt;__main__.A object at 0x1620ed0&gt;
-> &lt;__main__.A object at 0x1620ed0&gt;
 ```
+def addProperty(self, attribute):
+      # create local setter and getter with a particular attribute name
+      getter = lambda self: self._getProperty(attribute)
+      setter = lambda self, value: self._setProperty(attribute, value)
+
+      # construct property attribute and add it to the class
+      setattr(self.__class__, attribute, property(fget=getter, \
+                                                  fset=setter, \
+                                                  doc="Auto-generated method"))
+
+  def _setProperty(self, attribute, value):
+      print "Setting: %s = %s" %(attribute, value)
+      setattr(self, '_' + attribute, value.title())
+
+  def _getProperty(self, attribute):
+      print "Getting: %s" %attribute
+      return getattr(self, '_' + attribute)
+
+      employee_mary.addProperty('phone')
+      employee_mary.phone = '123 456 777'
+      print employee_mary.phone  
+
+```
+# Перегрузка операторов, строковое представление
+
+- __str__(self)
+Определяет поведение функции str(), вызванной для экземпляра вашего класса.
+
+```
+class Command(object):
+    def __init__(self, *employees):
+        self.employees = employees
+        self.cost = sum(employee.cost for employee in employees)
+        self.level = max(employee.cost for employee in employees)
+
+    def __add__(self, other):
+        if isinstance(other, Employee):
+            return Command(other, *self.employees)
+
+    def __str__(self):
+        return 'Command (cost={b.cost}, level={b.level}) {b.employees}'.format(b=self)
+
+```
+- __repr__(self)
+Определяет поведение функции repr(), вызыванной для экземпляра вашего класса. Главное отличие от str() в целевой аудитории. repr() больше предназначен для машинно-ориентированного вывода (более того, это часто должен быть валидный код на Питоне), а str() предназначен для чтения людьми.
+
+```
+def __add__(self, other):
+    if isinstance(other, self.__class__):
+        return Command(self, other)
+
+def __repr__(self):
+    return '{u.name} (cost={u.cost}, level={u.level})'.format(u=self)
+
+```
+- __unicode__(self)
+Определяет поведение функции unicode(), вызыванной для экземпляра вашего класса. unicode() похож на str(), но возвращает строку в юникоде. Будте осторожны: если клиент вызывает str() на экземпляре вашего класса, а вы определили только __unicode__(), то это не будет работать. Постарайтесь всегда определять __str__() для случая, когда кто-то не имеет такой роскоши как юникод.
+
+
+# Магические методы сравнения
+
+- __cmp__(self, other)
+Самый базовый из методов сравнения. Он, в действительности, определяет поведение для всех операторов сравнения (>, ==, !=, итд.), но не всегда так, как вам это нужно (например, если эквивалентность двух экземпляров определяется по одному критерию, а то что один больше другого по какому-нибудь другому). __cmp__ должен вернуть отрицательное число, если self < other, ноль, если self == other, и положительное число в случае self > other. Но, обычно, лучше определить каждое сравнение, которое вам нужно, чем определять их всех в __cmp__. Но __cmp__ может быть хорошим способом избежать повторений и увеличить ясность, когда все необходимые сравнения оперерируют одним критерием.
+
+- __eq__(self, other)
+Определяет поведение оператора равенства, ==.
+
+- __ne__(self, other)
+Определяет поведение оператора неравенства, !=.
+
+- __lt__(self, other)
+Определяет поведение оператора меньше, <.
+
+- __gt__(self, other)
+Определяет поведение оператора больше, >.
+
+- __le__(self, other)
+Определяет поведение оператора меньше или равно, <=.
+
+- __ge__(self, other)
+Определяет поведение оператора больше или равно, >=.
+
+# Числовые магические методы
+
+- __pos__(self)
+Определяет поведение для унарного плюса (+some_object)
+
+- __neg__(self)
+Определяет поведение для отрицания(-some_object)
+
+- __abs__(self)
+Определяет поведение для встроенной функции abs().
+
+- __invert__(self)
+Определяет поведение для инвертирования оператором ~. Для объяснения что он делает смотри статью в Википедии о бинарных операторах.
+
+- __round__(self, n)
+Определяет поведение для встроенной функции round(). n это число знаков после запятой, до которого округлить.
+
+- __floor__(self)
+Определяет поведение для math.floor(), то есть, округления до ближайшего меньшего целого.
+
+- __ceil__(self)
+Определяет поведение для math.ceil(), то есть, округления до ближайшего большего целого.
+
+- __trunc__(self)
+Определяет поведение для math.trunc(), то есть, обрезания до целого.
+
+# Обычные арифметические операторы
+
+- __add__(self, other)
+Сложение.
+
+- __sub__(self, other)
+Вычитание.
+
+- __mul__(self, other)
+Умножение.
+
+- __floordiv__(self, other)
+Целочисленное деление, оператор //.
+
+- __div__(self, other)
+Деление, оператор /.
+
+- __truediv__(self, other)
+Правильное деление. Заметьте, что это работает только когда используется from __future__ import division.
+
+- __mod__(self, other)
+Остаток от деления, оператор %.
+
+- __divmod__(self, other)
+Определяет поведение для встроенной функции divmod().
+
+- __pow__
+Возведение в степень.
+
+- __lshift__(self, other)
+Двоичный сдвиг влево, оператор <<.
+
+- __rshift__(self, other)
+Двоичный сдвиг вправо, оператор >>.
+
+- __and__(self, other)
+Двоичное И, оператор &.
+
+- __or__(self, other)
+Двоичное ИЛИ, оператор |.
+
+- __xor__(self, other)
+Двоичный xor, оператор ^.
+
+# Отражённые арифметические операторы
+
+- __radd__(self, other)
+Отражённое сложение.
+
+- __rsub__(self, other)
+Отражённое вычитание.
+
+- __rmul__(self, other)
+Отражённое умножение.
+
+- __rfloordiv__(self, other)
+Отражённое целочисленное деление, оператор //.
+
+- __rdiv__(self, other)
+Отражённое деление, оператор /.
+
+- __rtruediv__(self, other)
+Отражённое правильное деление. Заметьте, что работает только когда используется from __future__ import division.
+
+- __rmod__(self, other)
+Отражённый остаток от деления, оператор %.
+
+- __rdivmod__(self, other)
+Определяет поведение для встроенной функции divmod(), когда вызывается divmod(other, self).
+
+- __rpow__
+Отражённое возведение в степерь
+
+- __rlshift__(self, other)
+Отражённый двоичный сдвиг влево
+
+- __rrshift__(self, other)
+Отражённый двоичный сдвиг вправо
+
+- __rand__(self, other)
+Отражённое двоичное И, оператор &.
+
+- __ror__(self, other)
+Отражённое двоичное ИЛИ, оператор |.
+
+- __rxor__(self, other)
+Отражённый двоичный xor, оператор ^.
+
+
+# Составное присваивание
+
+- __iadd__(self, other)
+Сложение с присваиванием.
+
+- __isub__(self, other)
+Вычитание с присваиванием.
+
+- __imul__(self, other)
+Умножение с присваиванием.
+
+- __ifloordiv__(self, other)
+Целочисленное деление с присваиванием, оператор //=.
+
+- __idiv__(self, other)
+Деление с присваиванием, оператор /=.
+
+- __itruediv__(self, other)
+Правильное деление с присваиванием.
+
+- __imod_(self, other)
+Остаток от деления с присваиванием
+
+- __ipow__
+Возведение в степерь с присваиванием
+
+- __ilshift__(self, other)
+Двоичный сдвиг влево с присваиванием, оператор <<=.
+
+- __irshift__(self, other)
+Двоичный сдвиг вправо с присваиванием, оператор >>=.
+
+- __iand__(self, other)
+Двоичное И с присваиванием, оператор &=.
+
+- __ior__(self, other)
+Двоичное ИЛИ с присваиванием, оператор |=.
+
+- __ixor__(self, other)
+Двоичный xor с присваиванием, оператор ^=.
+
+# Магические методы преобразования типов
+
+- __int__(self)
+Преобразование типа в int.
+
+- __long__(self)
+Преобразование типа в long.
+
+- __float__(self)
+Преобразование типа в float.
+
+- __complex__(self)
+Преобразование типа в комплексное число.
+
+- __oct__(self)
+Преобразование типа в восьмеричное число.
+
+- __hex__(self)
+Преобразование типа в шестнадцатиричное число.
+
+- __index__(self)
+Преобразование типа к int, когда объект используется в срезах (выражения вида [start:stop:step]). Если вы определяете свой числовый тип, который может использоваться как индекс списка, вы должны определить __index__.
+
+- __trunc__(self)
+Вызывается при math.trunc(self). Должен вернуть своё значение, обрезанное до целочисленного типа (обычно long).
+
+- __coerce__(self, other)
+Метод для реализации арифметики с операндами разных типов. __coerce__ должен вернуть None если преобразование типов невозможно. Если преобразование возможно, он должен вернуть пару (кортеж из 2-х элементов) из self и other, преобразованные к одному типу.

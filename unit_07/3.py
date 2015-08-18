@@ -1,78 +1,46 @@
 # -*- coding: utf-8 -*-
-class A(object):
-    qux = 'A'
-    def __init__(self, name):
-        self.name=name
-    def foo(self):
-        print 'foo'
 
-a = A('a')
-print '''
-class A(object):
-    qux = 'A'
-    def __init__(self, name):
-        self.name=name
-    def foo(self):
-        print 'foo'
+class Person(object):
+    """ A simple class representing a person object.
 
-a = A('a')
-    '''
+    """
+    #initialize name, ID number, city
+    def __init__(self, fname, lname, ID, city):
+        self.__ID = ID
+        self.__first_name  = fname
+        self.__last_name  = lname
+        self.__city = city
 
-print '__dict__ у классов не совсем словарь'
-print A.__dict__ 
+    def _getName(self):
+        s = ' '
+        return s.join((self.__first_name, self.__last_name))
 
-print "__dict__ ответственен за доступ к внутреннему пространству имен, в котором хранятся методы, дескрипторы, переменные, свойства и прочее:"
+    #display employee name
+    def show_person(self):
+        print('Name:', self._getName())
+        print('ID:', self.__ID)
+        print('City:', self.__city)
 
-print dict(A.__dict__) 
-print A.__dict__.keys()
+# Проверка способа запуска модуля
 
-print "Класс является объектом."
+if __name__ == '__main__':
+    # Create an person
+    john = Person(
+        fname='John', lname='Paw', city="NYC", ID=223344
+    )
+    mary = Person(
+        fname='Mary', lname='Sue', city='LA', ID=113344
+    )
 
-print isinstance(A, object) # True
 
-print "Число — это тоже объект."
+    print 'список всех  всех публичных атрибутов объекта Person: '
 
-print isinstance(42, object) # True
+    print [arg for arg in dir(Person) if not arg.startswith('_')]
+    print filter(lambda x: not x.startswith('_'), dir(Person))
 
-print "Класс — это класс (т.е. тип)."
+    print 'список всех  всех публичных атрибутов объекта mary: '
 
-print isinstance(A, type) # True
-
-print 'А вот число классом (типом) не является. (Что такое type будет пояснено позже)'
-
-print isinstance(42, type) # False
-
-print "Ну и a — тоже обычный объект."
-
-a = A
-print isinstance(a, A) # True
-print isinstance(a, object) # True
-print isinstance(a, type) # False
-
-print 'И у A всего один прямой родительский класс — object.'
-
-print A.__bases__ # (&lt;type 'object'&gt;,)
-
-print "Часть специальных параметров можно даже менять:"
-
-print A.__name__ # 'A'
-A.__name__ = 'B'
-print A # &lt;class '__main__.B'&gt;
-
-print "С помощью getattr получаем доступ к атрибутам класса:"
-
-print A.qux # 'A'
-A.foo # &lt;unbound method A.foo&gt;
-
-a = A
-b = A
-
-print b.qux # 'A'
-print A.qux # 'A'
-
-print "Меняем атрибут qux у класса A. И соответственно должны поменяться значения, которые возвращают экземпляры класса A — a и b:"
-
-A.qux='B'
-print a.qux # 'B'
-print b.qux # 'B'
-
+    print [arg for arg in dir(mary) if not arg.startswith('_')]
+    print 'список методов объекта'
+    print [arg for arg in dir(Person) if callable(getattr(Person, arg))]
+    print filter(lambda arg: callable(getattr(mary, arg)), dir(mary))
