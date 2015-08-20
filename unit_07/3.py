@@ -32,7 +32,6 @@ if __name__ == '__main__':
         fname='Mary', lname='Sue', city='LA', ID=113344
     )
 
-
     print 'список всех  всех публичных атрибутов объекта Person: '
 
     print [arg for arg in dir(Person) if not arg.startswith('_')]
