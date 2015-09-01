@@ -10,18 +10,68 @@ import sys, os
 import employee
 from PyQt4 import QtGui, QtCore
 
+class MessagesWidgets(QtGui.QWidget):
+    def __init__(self, parent=None):
+        super(MessagesWidgets, self).__init__(parent)
+
+        self.setWindowFlags(QtCore.Qt.Dialog | QtCore.Qt.WindowSystemMenuHint)
+        self.setWindowModality(QtCore.Qt.WindowModal)
+
+        okButton = QtGui.QPushButton("Ok")
+        abouttext = QtGui.QLabel('Janus Nic Aplication')
+        grid = QtGui.QGridLayout() 
+        grid.addWidget(abouttext, 1, 0)       
+        grid.addWidget(okButton)
+       
+        self.setLayout(grid)
+        self.setGeometry(300, 300, 350, 300)
+        
+        self.setWindowTitle("Message for You")
+        okButton.clicked.connect(self.close)  
+
+
 class ModalWind(QtGui.QWidget):
     def __init__(self, parent=None):
         super(ModalWind, self).__init__(parent)
         self.setWindowFlags(QtCore.Qt.Dialog | QtCore.Qt.WindowSystemMenuHint)
         self.setWindowModality(QtCore.Qt.WindowModal)
-        self.setWindowTitle("Add new empl")
-        self.resize(200, 50)
-        butt_hide = QtGui.QPushButton('Save')   
-        vbox = QtGui.QVBoxLayout()
-        vbox.addWidget(butt_hide)
-        self.setLayout(vbox)
-        butt_hide.clicked.connect(self.close)  
+        
+        fname = QtGui.QLabel('First Name')
+        lname = QtGui.QLabel('Last Name')
+        city = QtGui.QLabel('City')
+        zid = QtGui.QLabel('ID')
+
+        fnamrEdit = QtGui.QLineEdit()
+        lnameEdit = QtGui.QLineEdit()
+        cityEdit = QtGui.QLineEdit()
+        zidEdit = QtGui.QLineEdit()
+
+        grid = QtGui.QGridLayout()
+        grid.setSpacing(10)
+
+        grid.addWidget(fname, 1, 0)
+        grid.addWidget(fnamrEdit, 1, 1)
+
+        grid.addWidget(lname, 2, 0)
+        grid.addWidget(lnameEdit, 2, 1)
+
+        grid.addWidget(city, 3, 0)
+        grid.addWidget(cityEdit, 3, 1)
+
+        grid.addWidget(zid, 4, 0)
+        grid.addWidget(zidEdit, 4, 1)
+
+        okButton = QtGui.QPushButton("Save")
+        cancelButton = QtGui.QPushButton("Cancel")
+        
+        grid.addWidget(okButton)
+        grid.addWidget(cancelButton)
+        
+        self.setLayout(grid)
+        self.setGeometry(300, 300, 350, 300)
+        self.setWindowTitle("Add new employee")
+        cancelButton.clicked.connect(self.close)  
+        
 
 class Staff(object):
 
@@ -42,13 +92,19 @@ class Manage(QtGui.QMainWindow):
         self.textEdit = QtGui.QTextEdit()
         self.data = data
 
+
         self.initUI()
 
+    def about(self):
+        messages_widget = MessagesWidgets(self)
+    
+        self.setToolTip('About Aplication')
+        messages_widget.show()
 
     def showDialog(self):
         win = ModalWind(self)
         win.show()
-        
+       
 
     def showList(self):
         mystaff = Staff()
@@ -68,6 +124,11 @@ class Manage(QtGui.QMainWindow):
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(self.close)
 
+        aboutAction = QtGui.QAction(QtGui.QIcon(os.getcwd() + "/icons/help.png"), 'About', self)
+        aboutAction.setShortcut('Ctrl+H')
+        aboutAction.setStatusTip('About application')
+        aboutAction.triggered.connect(self.about)
+
         addAction = QtGui.QAction(QtGui.QIcon(os.getcwd() + "/icons/web.png"), 'Add', self)
         addAction.setShortcut('Ctrl+N')
         addAction.setStatusTip('Add record')
@@ -83,6 +144,11 @@ class Manage(QtGui.QMainWindow):
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('&File')
         fileMenu.addAction(exitAction)
+
+        menubar = self.menuBar()
+        aboutMenu = menubar.addMenu('&About')
+        aboutMenu.addAction(aboutAction)
+
 
         toolbar = self.addToolBar('Exit')
         toolbar.addAction(exitAction)
