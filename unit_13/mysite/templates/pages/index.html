@@ -1,0 +1,25 @@
+<h2>Index page {{ company }}</h2>
+
+<h3>{{ title }}</h3>
+<div>
+
+{{ message|upper }}
+
+{{ pub_date|escape|linebreaks }}
+{{ author_name }}
+</div>
+<p>
+{{ exerpt|truncatewords:130 }}
+</p>
+
+<div>
+{{ exerpt|join:", " }}
+</div>
+
+<div>
+{{ article_list|length }}
+</div>
+
+<div>
+{{ text }}
+</div>
