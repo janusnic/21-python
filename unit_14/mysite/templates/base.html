@@ -1,0 +1,20 @@
+<!DOCTYPE html> 
+<html> 
+    <head> 
+	<title>{% block title %} SITE NAME {% endblock %}</title>
+    </head> 
+   <body> 
+	{% block head %} 
+	{% block htitle %}{% endblock %} 
+	{% block menu %}{% endblock %} 
+	{% endblock %} 
+{% block page %} 
+	{% block content %} 
+	{% endblock %} 
+{% endblock %} 
+{% block footer %} 
+	{% block copyright %} 
+	{% endblock %} 
+{% endblock %} 
+    </body> 
+</html>
