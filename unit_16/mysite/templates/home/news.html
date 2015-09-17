@@ -1,0 +1,21 @@
+{% extends "home/base.html" %} 
+
+{% block title %} {{ block.super }} - SECTION NAME {% endblock %}
+{% block content %}
+<h2>{{ company | upper }}</h2> 
+<h2> {{ title|lower }}</h2>
+
+{% lorem 3 p random %} 
+    {% for article in article_list %} 
+        <div> 
+            <h2><a href="#"> 
+                {{ article.title }} 
+            </a></h2> 
+                <span>{{ pub_date|date:"SHORT_DATE_FORMAT" }} | 
+                      {{ article.author_name|addslashes }} 
+                </span>
+                {% lorem 1 p random %} 
+        </div> 
+    {% endfor %}
+
+{% endblock %}
