@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+        <div id="singlepost">
+                <p>{{ result.headline }}</p>
+                <span>{{ result.pub_date|date:"SHORT_DATE_FORMAT" }} | 
+                      {% for author in result.authors.all %}
+                      {{ author|addslashes }} 
+                      {% endfor %}
+                </span>
+                <p>
+                {% autoescape off %}
+                {{ result.body_text }} 
+                {% endautoescape %}
+                </p>
+        </div>
+{% endblock %}
