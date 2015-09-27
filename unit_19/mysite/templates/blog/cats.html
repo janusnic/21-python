@@ -1,0 +1,14 @@
+{% if cats %}
+    <ul class="nav nav-sidebar">
+    {% for c in cats %}
+        <li>
+        <a href="/blog/category/{{ c.slug }}/"> 
+        {{ c.name }} 
+        </a></li>
+    {% endfor %}
+
+{% else %}
+    <li> <strong >There are no category present.</strong></li>
+
+    </ul>
+{% endif %}

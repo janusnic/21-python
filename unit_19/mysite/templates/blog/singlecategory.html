@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+        <div id="categorieslist">
+                <h2>Category {{ posts.0.category }}</h2>
+                {% for post in posts %}
+         <p><a href="/blog/blogs/{{ post.id }}/">{{ post.name }}</a></p>
+                {% endfor %}
+        </div>
+{% endblock %}

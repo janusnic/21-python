@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Contact me!{% endblock %}
+{% block htitle %}Contact me!{% endblock %}
+
+
+
+{% block content %}
+ <div id="contact_wrap">
+
+   <div id="contact" class="clearfix">
+    
+        <form name="theform" action="." method="post" id="theform">
+        {% csrf_token %}
+
+             {{ form.non_field_errors }}
+                <div class="fieldWrapper">
+                    {{ form.name.errors }}
+                    <label for="{{ form.name.id_for_label }}">Your Name:</label>
+                    {{ form.name }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.subject.errors }}
+                    <label for="{{ form.subject.id_for_label }}">Your subject:</label>
+                    {{ form.subject }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.message.errors }}
+                    <label for="{{ form.message.id_for_label }}">Your message:</label>
+                    {{ form.message }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.email.errors }}
+                    <label for="{{ form.email.id_for_label }}">Your email address:</label>
+                    {{ form.email }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.cc_myself.errors }}
+                    <label for="{{ form.cc_myself.id_for_label }}">CC yourself?</label>
+                    {{ form.cc_myself }}
+                </div>
+                <input type="submit" value="Submit" />
+        </form>
+
+    
+    </div><!-- end contact -->
+
+</div><!-- end contact_wrap -->
+
+{% endblock %}

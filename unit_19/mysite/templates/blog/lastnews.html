@@ -1,0 +1,9 @@
+<div id = "news">
+<h4>Последние статьи</h4>
+<ul class="links">
+	{% for post in last3news %}
+       <li><a href="/blog/posts/{{ post.slug }}/">{{ post.headline }}</a></li>
+    {% endfor %}
+	
+</ul>
+</div>

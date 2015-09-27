@@ -1,0 +1,67 @@
+{% extends "base.html" %} 
+{% load staticfiles %}
+{% load listlastnews %}
+{% block title %} {{ block.super }} - SECTION NAME {% endblock %}
+
+{% block sidebar %} 
+    {{ block.super }}
+    <div id="sidebar">
+    {% lastnews %} 
+    <br>
+        <a href="/blog/month/{{ year }}/{{ month }}">Monthly Archive</a><br /> 
+        
+    </div> 
+{% endblock %}
+
+{% block content %} 
+
+<h2>Blog Index page</h2>
+        
+
+        {% if user.is_authenticated %}
+        <h1>Blog says... hello {{ user.username }}!</h1>
+        {% else %}
+        <h1>Blog says... hello world!</h1>
+        <a href="/myauth/login/">Login</a>
+        {% endif %}
+
+    {% if posts_list %}
+      {% for article in posts_list %} 
+        <div> 
+            
+            <h2><a href="/blog/posts/{{ article.slug }}/"> 
+                {{ article.headline }} 
+            </a></h2> 
+                <span>{{ article.pub_date|date:"SHORT_DATE_FORMAT" }} | 
+                      {% for author in article.authors.all %}
+                      {{ author|addslashes }} 
+                      {% endfor %}
+                </span>
+        </div> 
+
+
+      {% endfor %}
+       <!-- Next/Prev page links  --> 
+      {% if posts_list.object_list and posts_list.paginator.num_pages > 1 %} 
+        <div class="pagination" style="margin-top: 20px; margin-left: -20px; "> 
+            <span class="step-links"> 
+                {% if posts_list.has_previous %} 
+                    <a href= "?page={{ posts_list.previous_page_number }}">newer entries &lt;&lt; </a> 
+                {% endif %} 
+
+                <span class="current"> 
+                    &nbsp;Page {{ posts_list.number }} of {{ posts_list.paginator.num_pages }} 
+                </span> 
+
+                {% if posts_list.has_next %} 
+                    <a href="?page={{ posts_list.next_page_number }}"> &gt;&gt; older entries</a> 
+                {% endif %} 
+            </span> 
+        </div> 
+       {% endif %}
+    {% else %}
+            <strong>There are no posts present.</strong>
+    {% endif %}
+
+
+{% endblock %}

@@ -1,0 +1,12 @@
+<p>You searched for: <strong>{{ query }}</strong></p>
+
+{% if entries %}
+    <p>Found {{ entries|length }} entry{{ entries|pluralize }}.</p>
+    <ul>
+        {% for entry in entries %}
+        <li>{{ entry.headline }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No entries matched your search criteria.</p>
+{% endif %}
