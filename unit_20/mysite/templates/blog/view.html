@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+        <div id="singlepost">
+                <p>{{ result.headline }}</p>
+                <span>{{ result.pub_date|date:"SHORT_DATE_FORMAT" }} | 
+                      {% for author in result.authors.all %}
+                      {{ author|addslashes }} 
+                      {% endfor %}
+                </span>
+                <p>
+                {% autoescape off %}
+                {{ result.body_text }} 
+                {% endautoescape %}
+
+                <li>
+                <a href="{% url 'goto' %}?post_id={{result.id}}">{{ result.headline }}</a>
+                {% if result.rating > 1 %}
+                    ({{ result.rating }} views)
+                {% elif result.rating == 1 %}
+                    ({{ result.rating }} view)
+                {% endif %}
+                </li>
+
+                </p>
+                        <!-- Comments  --> 
+                  {% if comments %} 
+                      <p>Comments: {{ comments|length }} </p> 
+                  {% endif %} 
+
+                  {% for comment in comments %} 
+                      <div class="comment"> 
+                          <div class="time">{{ comment.created }} | {{ comment.author }}</div> 
+                          <div class="body">{{ comment.body|linebreaks }}</div> 
+                      </div> 
+                  {% endfor %}
+
+                    <!-- Next/Prev page links  --> 
+      {% if comments.object_list and comments.paginator.num_pages > 1 %} 
+        <div class="pagination" style="margin-top: 20px; margin-left: -20px; "> 
+            <span class="step-links"> 
+                {% if comments.has_previous %} 
+                    <a href= "?page={{ comments.previous_page_number }}">newer entries &lt;&lt; </a> 
+                {% endif %} 
+
+                <span class="current"> 
+                    &nbsp;Page {{ comments.number }} of {{ comments.paginator.num_pages }} 
+                </span> 
+
+                {% if comments.has_next %} 
+                    <a href="?page={{ comments.next_page_number }}"> &gt;&gt; older entries</a> 
+                {% endif %} 
+            </span> 
+        </div> 
+       {% endif %}
+
+
+                  {% if user.is_authenticated %} 
+                  <div id="addc">Add a comment</div> 
+                  <!-- Comment form  --> 
+                      <form action="/blog/add_comment/{{ result.slug }}/" method="POST">{% csrf_token %} <!-- защита против CSRF атак -->
+                          <div id="cform"> 
+                  
+                              <p>{{ form.body|linebreaks }}</p> 
+                          </div> 
+                          <div id="submit"><input type="submit" value="Submit"></div> 
+                      </form> 
+                      {% endif %}       
+                  </div>
+
+        </div>
+{% endblock %}

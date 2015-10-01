@@ -1,0 +1,30 @@
+{% extends "base.html" %} 
+{% load staticfiles %}
+{% block title %} {{ block.super }} - SECTION NAME {% endblock %}
+
+{% block content %} 
+
+<h2>Blog Index page</h2>
+
+
+    {% if posts_list %}
+      {% for article in posts_list %} 
+        <div> 
+            
+            <h2><a href="/blog/posts/{{ article.slug }}/"> 
+                {{ article.headline }} 
+            </a></h2> 
+                <span>{{ article.pub_date|date:"SHORT_DATE_FORMAT" }} | 
+                      {% for author in article.authors.all %}
+                      {{ author|addslashes }} 
+                      {% endfor %}
+                </span>
+        </div> 
+
+      {% endfor %}
+
+    {% else %}
+            <strong>There are no posts present.</strong>
+    {% endif %}
+
+{% endblock %}

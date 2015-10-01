@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load listlastnews %}
+{% block title %} {{ block.super }} - SECTION NAME {% endblock %}
+
+{% block sidebar %} 
+    <style type="text/css"> 
+        #sidebar { float: right; border: 1px dotted #ccc; padding: 4px; } 
+    </style> 
+    <div id="sidebar">
+    {% lastnews %} 
+        Monthly Archive<br /> 
+        {% for month in months %} 
+            <a href="/blog/month/{{ month.0 }}/{{month.1 }}/">{{ month.2 }}</a> <br /> 
+        {% endfor %} 
+    </div> 
+{% endblock %}
+
+{% block content %}
+
+
+<h1>Blog home page</h1>
+<h2>{{ company | upper }}</h2>
+<p><b>{{ author_name|capfirst }}</b></p>
+
+
+     <div id="postslist">
+                <!-- Posts  --> 
+    <ul> 
+        {% for post in posts %} 
+            <div class="title">{{ post.headline }}</div> 
+            <ul> 
+                <div class="time">{{ post.pub_date }}</div> 
+                {% autoescape off %}
+                <div class="body">{{ post.body|linebreaks }}</div> 
+                {% endautoescape %}
+            </ul> 
+        {% endfor %} 
+    </ul> 
+
+                <!-- Next/Prev page links  --> 
+      {% if posts.object_list and posts.paginator.num_pages > 1 %} 
+      	<div class="pagination" style="margin-top: 20px; margin-left: -20px; "> 
+            <span class="step-links"> 
+                {% if posts.has_previous %} 
+  					<a href= "?page={{ posts.previous_page_number }}">newer entries &lt;&lt; </a> 
+                {% endif %} 
+
+                <span class="current"> 
+                    &nbsp;Page {{ posts.number }} of {{ posts.paginator.num_pages }} 
+                </span> 
+
+                {% if posts.has_next %} 
+                    <a href="?page={{ posts.next_page_number }}"> &gt;&gt; older entries</a> 
+                {% endif %} 
+            </span> 
+        </div> 
+       {% endif %}
+     </div>
+
+{% endblock %}
